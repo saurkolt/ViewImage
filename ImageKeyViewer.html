@@ -1,321 +1,761 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🖼️ Image Key Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🖼️ Image Key Viewer - Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-800: #334155;
+            --gray-700: #475569;
+            --gray-600: #64748b;
+            --gray-400: #94a3b8;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --card-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 30px;
+            padding: 30px 20px;
+            color: var(--dark);
+            position: relative;
+            overflow-x: hidden;
         }
-        
+
+        /* Animated background bubbles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: bgMove 60s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out;
         }
-        
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HEADER ===== */
         .header {
             text-align: center;
+            margin-bottom: 40px;
             color: white;
-            margin-bottom: 30px;
+            position: relative;
         }
-        
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
         }
-        
-        .card h2 {
-            color: #333;
-            font-size: 18px;
-            margin-bottom: 15px;
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.2);
+        }
+
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--gray-100);
         }
-        
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .card-header .badge {
+            margin-left: auto;
+            padding: 6px 12px;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ===== TEXTAREA ===== */
+        .textarea-wrapper {
+            position: relative;
+        }
+
         textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            font-family: 'Consolas', monospace;
+            min-height: 160px;
+            padding: 18px;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
             font-size: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            line-height: 1.6;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
             resize: vertical;
-            transition: border 0.3s;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+            color: var(--gray-800);
         }
-        
+
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
-        
+
+        textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .char-count {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .char-count.show {
+            opacity: 1;
+        }
+
+        /* ===== BUTTONS ===== */
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
-        
+
         .btn {
-            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             border: none;
-            border-radius: 8px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
-        
+
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
         }
-        
+
         .btn-success {
-            background: #4caf50;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
-        
-        .btn-success:hover { background: #45a049; }
-        
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
+        }
+
         .btn-danger {
-            background: #f44336;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
         }
-        
-        .btn-danger:hover { background: #da190b; }
-        
-        .preview-box {
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn .icon {
+            font-size: 16px;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 14px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+            line-height: 1.6;
+        }
+
+        .info-box.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+
+        .info-box.error {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: #92400e;
+            border-left: 4px solid var(--warning);
+        }
+
+        /* ===== IMAGE PREVIEW ===== */
+        .preview-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: 
                 linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
                 linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
                 linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            padding: 30px;
-            text-align: center;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-size: 24px 24px;
+            background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+            border: 2px dashed var(--gray-200);
+            transition: all 0.3s ease;
         }
-        
-        .preview-box img {
+
+        .preview-wrapper.has-image {
+            background: var(--gray-50);
+            border-style: solid;
+            border-color: var(--success);
+        }
+
+        .preview-wrapper img {
             max-width: 100%;
-            max-height: 400px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            border-radius: 8px;
-            background: white;
+            max-height: 450px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            animation: zoomIn 0.5s ease-out;
         }
-        
-        .preview-box .placeholder {
-            color: #999;
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .placeholder-content {
+            text-align: center;
+            color: var(--gray-400);
+            padding: 40px;
+        }
+
+        .placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .placeholder-text {
             font-size: 16px;
+            font-weight: 500;
         }
-        
-        .info-box {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 13px;
-            display: none;
-        }
-        
-        .info-box.show { display: block; }
-        
-        .info-box.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-left: 4px solid #4caf50;
-        }
-        
-        .info-box.error {
-            background: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #f44336;
-        }
-        
-        .stats {
+
+        /* ===== STATS ===== */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 12px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
-        
-        .stat-item {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
+
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 14px;
+            border: 2px solid var(--gray-100);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .stat-item .label {
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-light);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+        }
+
+        .stat-label {
             font-size: 11px;
-            color: #666;
+            color: var(--gray-500);
             text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .stat-item .value {
-            font-size: 16px;
             font-weight: 700;
-            color: #333;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gray-900);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            font-size: 13px;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        .footer .heart {
+            color: #f43f5e;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            body { padding: 20px 12px; }
+            .header h1 { font-size: 28px; }
+            .logo-icon { width: 60px; height: 60px; font-size: 30px; }
+            .card { padding: 20px; border-radius: 20px; }
+            .btn { padding: 12px 20px; font-size: 13px; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>🖼️ Image Key Viewer</h1>
-            <p>Base64 key paste kara aani image paha</p>
+            <div class="logo-icon">🖼️</div>
+            <h1>Image Key Viewer</h1>
+            <p class="subtitle">SQL madhun Base64 paste kara → Image view kara</p>
         </div>
 
+        <!-- Input Card -->
         <div class="card">
-            <h2>📋 Base64 Key Paste Kara</h2>
-            <textarea id="base64Input" 
-                placeholder="SQL madhun copy kela Base64 paste kara yetha..."></textarea>
-            
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                <h2>Base64 Key Paste Kara</h2>
+                <span class="badge" id="pasteBadge">Ready</span>
+            </div>
+
+            <div class="textarea-wrapper">
+                <textarea 
+                    id="base64Input" 
+                    placeholder="SQL Server madhun Base64 string paste kara yetha (Ctrl+V)...&#10;&#10;Example: iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1..."></textarea>
+                <span class="char-count" id="charCount">0 chars</span>
+            </div>
+
             <div class="btn-group">
                 <button class="btn btn-primary" onclick="displayImage()">
-                    🖼️ Display Image
+                    <span class="icon">🖼️</span>
+                    <span>Display Image</span>
                 </button>
                 <button class="btn btn-success" onclick="downloadImage()">
-                    💾 Download
+                    <span class="icon">💾</span>
+                    <span>Download</span>
                 </button>
                 <button class="btn btn-danger" onclick="clearAll()">
-                    🗑️ Clear
+                    <span class="icon">🗑️</span>
+                    <span>Clear</span>
                 </button>
             </div>
-            
+
             <div id="infoBox" class="info-box"></div>
         </div>
 
+        <!-- Preview Card -->
         <div class="card">
-            <h2>🖼️ Image Preview</h2>
-            <div class="preview-box" id="previewBox">
-                <div class="placeholder">Image yethe disel...</div>
+            <div class="card-header">
+                <div class="card-icon">🖼️</div>
+                <h2>Image Preview</h2>
+                <span class="badge" id="previewBadge">Empty</span>
             </div>
+
+            <div class="preview-wrapper" id="previewWrapper">
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🖼️</div>
+                    <div class="placeholder-text">Image yethe disel...</div>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid" style="display:none;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Made with <span class="heart">❤️</span> by Salsys Team
         </div>
     </div>
 
     <script>
-        function displayImage() {
-            const input = document.getElementById('base64Input').value.trim();
-            const previewBox = document.getElementById('previewBox');
-            const infoBox = document.getElementById('infoBox');
+        const base64Input = document.getElementById('base64Input');
+        const charCount = document.getElementById('charCount');
+        const infoBox = document.getElementById('infoBox');
+        const previewWrapper = document.getElementById('previewWrapper');
+        const statsGrid = document.getElementById('statsGrid');
+        const pasteBadge = document.getElementById('pasteBadge');
+        const previewBadge = document.getElementById('previewBadge');
+
+        let currentImageData = null;
+
+        // ============================================
+        // AUTO UPDATE CHARACTER COUNT
+        // ============================================
+        base64Input.addEventListener('input', function() {
+            const len = this.value.trim().length;
+            charCount.textContent = len.toLocaleString() + ' chars';
             
+            if (len > 0) {
+                charCount.classList.add('show');
+                pasteBadge.textContent = 'Pasted';
+                pasteBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                pasteBadge.style.color = 'white';
+            } else {
+                charCount.classList.remove('show');
+                pasteBadge.textContent = 'Ready';
+                pasteBadge.style.background = '#f1f5f9';
+                pasteBadge.style.color = '#475569';
+            }
+        });
+
+        // ============================================
+        // DISPLAY IMAGE
+        // ============================================
+        function displayImage() {
+            const input = base64Input.value.trim();
+
             if (!input) {
                 showInfo('error', '❌ Base64 key paste kara!');
                 return;
             }
-            
+
             // Remove data URI prefix if present
             let base64 = input;
             if (base64.startsWith('data:image')) {
                 base64 = base64.split(',')[1];
             }
-            
+
             // Remove whitespace/newlines
             base64 = base64.replace(/\s/g, '');
-            
+
             // Detect image type from base64 prefix
             let contentType = 'image/png';
             if (base64.startsWith('/9j/')) contentType = 'image/jpeg';
             else if (base64.startsWith('R0lGOD')) contentType = 'image/gif';
             else if (base64.startsWith('Qk')) contentType = 'image/bmp';
             else if (base64.startsWith('iVBOR')) contentType = 'image/png';
-            
+            else if (base64.startsWith('PHN2Zw')) contentType = 'image/svg+xml';
+
             const dataUri = `data:${contentType};base64,${base64}`;
-            
+
+            // Show loading state
+            previewWrapper.innerHTML = `
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">⏳</div>
+                    <div class="placeholder-text">Loading image...</div>
+                </div>
+            `;
+
             // Create image to test
             const img = new Image();
-            
+
             img.onload = function() {
-                previewBox.innerHTML = '';
-                previewBox.appendChild(img);
-                
-                showInfo('success', `✅ Image successfully loaded! 
-                    Size: ${img.width}x${img.height}px | 
-                    Type: ${contentType} | 
-                    Base64 length: ${base64.length.toLocaleString()} chars`);
-                
+                previewWrapper.innerHTML = '';
+                previewWrapper.appendChild(img);
+                previewWrapper.classList.add('has-image');
+
+                previewBadge.textContent = 'Loaded';
+                previewBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                previewBadge.style.color = 'white';
+
+                currentImageData = { img, contentType, base64 };
+
+                showInfo('success', `✅ Image successfully loaded!`);
+
                 // Stats
-                const statsHtml = `
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="label">Width</div>
-                            <div class="value">${img.width}px</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="label">Height</div>
-                            <div class="value">${img.height}px</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="label">Base64 Size</div>
-                            <div class="value">${(base64.length/1024).toFixed(1)} KB</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="label">Format</div>
-                            <div class="value">${contentType.split('/')[1].toUpperCase()}</div>
-                        </div>
+                statsGrid.style.display = 'grid';
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">Width</div>
+                        <div class="stat-value">${img.width}px</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Height</div>
+                        <div class="stat-value">${img.height}px</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Base64 Size</div>
+                        <div class="stat-value">${(base64.length/1024).toFixed(1)} KB</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Format</div>
+                        <div class="stat-value">${contentType.split('/')[1].toUpperCase()}</div>
                     </div>
                 `;
-                infoBox.innerHTML += statsHtml;
             };
-            
+
             img.onerror = function() {
-                previewBox.innerHTML = '<div class="placeholder" style="color:#f44336;">❌ Invalid Base64 key!</div>';
+                previewWrapper.innerHTML = `
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon" style="color:#ef4444;">❌</div>
+                        <div class="placeholder-text" style="color:#ef4444;">Invalid Base64 Key!</div>
+                    </div>
+                `;
+                previewWrapper.classList.remove('has-image');
+
+                previewBadge.textContent = 'Error';
+                previewBadge.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                previewBadge.style.color = 'white';
+
                 showInfo('error', '❌ Image load nahi zali. Base64 key valid ahe ka verify kara.');
+                statsGrid.style.display = 'none';
             };
-            
+
+            img.style.cssText = 'max-width:100%; max-height:450px; border-radius:12px; box-shadow:0 20px 50px rgba(0,0,0,0.25);';
             img.src = dataUri;
-            img.style.cssText = 'max-width:100%; max-height:400px; box-shadow:0 8px 25px rgba(0,0,0,0.2); border-radius:8px;';
         }
-        
+
+        // ============================================
+        // DOWNLOAD IMAGE
+        // ============================================
         function downloadImage() {
-            const input = document.getElementById('base64Input').value.trim();
+            const input = base64Input.value.trim();
             if (!input) {
-                alert('❌ Base64 key paste kara!');
+                showInfo('error', '❌ Base64 key paste kara!');
                 return;
             }
-            
+
             let base64 = input;
             if (base64.startsWith('data:image')) {
                 base64 = base64.split(',')[1];
             }
             base64 = base64.replace(/\s/g, '');
-            
+
             // Detect type
             let contentType = 'image/png';
             let ext = 'png';
             if (base64.startsWith('/9j/')) { contentType = 'image/jpeg'; ext = 'jpg'; }
             else if (base64.startsWith('R0lGOD')) { contentType = 'image/gif'; ext = 'gif'; }
             else if (base64.startsWith('Qk')) { contentType = 'image/bmp'; ext = 'bmp'; }
-            
+
             try {
                 const byteChars = atob(base64);
                 const byteNumbers = new Array(byteChars.length);
@@ -324,40 +764,99 @@
                 }
                 const byteArray = new Uint8Array(byteNumbers);
                 const blob = new Blob([byteArray], { type: contentType });
-                
+
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Image_${Date.now()}.${ext}`;
+                a.download = `Image_${new Date().toISOString().slice(0,10)}_${Date.now()}.${ext}`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
-                showInfo('success', '✅ Image downloaded!');
+
+                showInfo('success', '✅ Image download zali! Check your Downloads folder.');
             } catch (err) {
                 showInfo('error', '❌ Download failed: ' + err.message);
             }
         }
-        
+
+        // ============================================
+        // CLEAR ALL
+        // ============================================
         function clearAll() {
-            document.getElementById('base64Input').value = '';
-            document.getElementById('previewBox').innerHTML = 
-                '<div class="placeholder">Image yethe disel...</div>';
-            document.getElementById('infoBox').className = 'info-box';
-            document.getElementById('infoBox').innerHTML = '';
+            base64Input.value = '';
+            charCount.classList.remove('show');
+            
+            previewWrapper.innerHTML = `
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🖼️</div>
+                    <div class="placeholder-text">Image yethe disel...</div>
+                </div>
+            `;
+            previewWrapper.classList.remove('has-image');
+
+            infoBox.className = 'info-box';
+            infoBox.innerHTML = '';
+            statsGrid.style.display = 'none';
+            statsGrid.innerHTML = '';
+
+            pasteBadge.textContent = 'Ready';
+            pasteBadge.style.background = '#f1f5f9';
+            pasteBadge.style.color = '#475569';
+
+            previewBadge.textContent = 'Empty';
+            previewBadge.style.background = '#f1f5f9';
+            previewBadge.style.color = '#475569';
+
+            currentImageData = null;
+            base64Input.focus();
         }
-        
+
+        // ============================================
+        // SHOW INFO BOX
+        // ============================================
         function showInfo(type, message) {
-            const infoBox = document.getElementById('infoBox');
             infoBox.className = `info-box show ${type}`;
             infoBox.innerHTML = message;
         }
-        
-        // Auto-paste from clipboard (optional)
+
+        // ============================================
+        // AUTO-PASTE ON PAGE LOAD
+        // ============================================
         window.addEventListener('DOMContentLoaded', () => {
-            // Focus textarea
-            document.getElementById('base64Input').focus();
+            base64Input.focus();
+
+            // Auto-display if paste happens
+            base64Input.addEventListener('paste', (e) => {
+                setTimeout(() => {
+                    if (base64Input.value.trim().length > 0) {
+                        // Auto display after paste
+                        // Uncomment next line for auto-display
+                        // displayImage();
+                    }
+                }, 100);
+            });
+        });
+
+        // ============================================
+        // CTRL+V SHORTCUT FROM ANYWHERE
+        // ============================================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Enter = Display
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                displayImage();
+            }
+            // Ctrl+S = Download
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                downloadImage();
+            }
+            // Ctrl+Delete = Clear
+            if (e.ctrlKey && e.key === 'Delete') {
+                e.preventDefault();
+                clearAll();
+            }
         });
     </script>
 </body>
