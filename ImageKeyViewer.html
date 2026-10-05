@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🖼️ Image Key Viewer - Pro</title>
+    <title>Image Key Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * {
@@ -25,6 +25,7 @@
             --gray-800: #334155;
             --gray-700: #475569;
             --gray-600: #64748b;
+            --gray-500: #64748b;
             --gray-400: #94a3b8;
             --gray-200: #e2e8f0;
             --gray-100: #f1f5f9;
@@ -45,7 +46,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background bubbles */
         body::before {
             content: '';
             position: fixed;
@@ -72,14 +72,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== HEADER ===== */
@@ -332,14 +326,8 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .info-box.success {
@@ -395,14 +383,8 @@
         }
 
         @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .placeholder-content {
@@ -472,40 +454,38 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* ===== LOADING SPINNER ===== */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             color: white;
             margin-top: 40px;
-            font-size: 13px;
-            opacity: 0.85;
+            font-size: 14px;
+            opacity: 0.95;
             font-weight: 500;
+            padding: 20px;
+        }
+
+        .footer .name {
+            font-weight: 800;
+            font-size: 16px;
+            background: linear-gradient(135deg, #ffffff, #fef3c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
         }
 
         .footer .heart {
             color: #f43f5e;
             animation: heartbeat 1.5s ease-in-out infinite;
             display: inline-block;
+            margin: 0 4px;
+            font-size: 16px;
         }
 
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.3); }
         }
 
         /* ===== RESPONSIVE ===== */
@@ -545,21 +525,21 @@
         <div class="header">
             <div class="logo-icon">🖼️</div>
             <h1>Image Key Viewer</h1>
-            <p class="subtitle">SQL madhun Base64 paste kara → Image view kara</p>
+            <p class="subtitle">Paste the Base64 key from SQL Server to view the image</p>
         </div>
 
         <!-- Input Card -->
         <div class="card">
             <div class="card-header">
                 <div class="card-icon">📋</div>
-                <h2>Base64 Key Paste Kara</h2>
+                <h2>Paste Base64 Key</h2>
                 <span class="badge" id="pasteBadge">Ready</span>
             </div>
 
             <div class="textarea-wrapper">
                 <textarea 
                     id="base64Input" 
-                    placeholder="SQL Server madhun Base64 string paste kara yetha (Ctrl+V)...&#10;&#10;Example: iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1..."></textarea>
+                    placeholder="Paste the Base64 string copied from SQL Server here (Ctrl+V)...&#10;&#10;Example: iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1..."></textarea>
                 <span class="char-count" id="charCount">0 chars</span>
             </div>
 
@@ -592,7 +572,7 @@
             <div class="preview-wrapper" id="previewWrapper">
                 <div class="placeholder-content">
                     <div class="placeholder-icon">🖼️</div>
-                    <div class="placeholder-text">Image yethe disel...</div>
+                    <div class="placeholder-text">Image will appear here...</div>
                 </div>
             </div>
 
@@ -601,7 +581,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            Made with <span class="heart">❤️</span> by Salsys Team
+            Made with <span class="heart">❤️</span> by <span class="name">Saurabh Kolte</span>
         </div>
     </div>
 
@@ -643,20 +623,17 @@
             const input = base64Input.value.trim();
 
             if (!input) {
-                showInfo('error', '❌ Base64 key paste kara!');
+                showInfo('error', '❌ Please paste the Base64 key first!');
                 return;
             }
 
-            // Remove data URI prefix if present
             let base64 = input;
             if (base64.startsWith('data:image')) {
                 base64 = base64.split(',')[1];
             }
 
-            // Remove whitespace/newlines
             base64 = base64.replace(/\s/g, '');
 
-            // Detect image type from base64 prefix
             let contentType = 'image/png';
             if (base64.startsWith('/9j/')) contentType = 'image/jpeg';
             else if (base64.startsWith('R0lGOD')) contentType = 'image/gif';
@@ -666,7 +643,6 @@
 
             const dataUri = `data:${contentType};base64,${base64}`;
 
-            // Show loading state
             previewWrapper.innerHTML = `
                 <div class="placeholder-content">
                     <div class="placeholder-icon">⏳</div>
@@ -674,7 +650,6 @@
                 </div>
             `;
 
-            // Create image to test
             const img = new Image();
 
             img.onload = function() {
@@ -688,9 +663,8 @@
 
                 currentImageData = { img, contentType, base64 };
 
-                showInfo('success', `✅ Image successfully loaded!`);
+                showInfo('success', '✅ Image loaded successfully!');
 
-                // Stats
                 statsGrid.style.display = 'grid';
                 statsGrid.innerHTML = `
                     <div class="stat-card">
@@ -725,7 +699,7 @@
                 previewBadge.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
                 previewBadge.style.color = 'white';
 
-                showInfo('error', '❌ Image load nahi zali. Base64 key valid ahe ka verify kara.');
+                showInfo('error', '❌ Failed to load image. Please verify the Base64 key is valid.');
                 statsGrid.style.display = 'none';
             };
 
@@ -739,7 +713,7 @@
         function downloadImage() {
             const input = base64Input.value.trim();
             if (!input) {
-                showInfo('error', '❌ Base64 key paste kara!');
+                showInfo('error', '❌ Please paste the Base64 key first!');
                 return;
             }
 
@@ -749,7 +723,6 @@
             }
             base64 = base64.replace(/\s/g, '');
 
-            // Detect type
             let contentType = 'image/png';
             let ext = 'png';
             if (base64.startsWith('/9j/')) { contentType = 'image/jpeg'; ext = 'jpg'; }
@@ -774,7 +747,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                showInfo('success', '✅ Image download zali! Check your Downloads folder.');
+                showInfo('success', '✅ Image downloaded! Check your Downloads folder.');
             } catch (err) {
                 showInfo('error', '❌ Download failed: ' + err.message);
             }
@@ -790,7 +763,7 @@
             previewWrapper.innerHTML = `
                 <div class="placeholder-content">
                     <div class="placeholder-icon">🖼️</div>
-                    <div class="placeholder-text">Image yethe disel...</div>
+                    <div class="placeholder-text">Image will appear here...</div>
                 </div>
             `;
             previewWrapper.classList.remove('has-image');
@@ -821,17 +794,15 @@
         }
 
         // ============================================
-        // AUTO-PASTE ON PAGE LOAD
+        // INIT ON LOAD
         // ============================================
         window.addEventListener('DOMContentLoaded', () => {
             base64Input.focus();
 
-            // Auto-display if paste happens
             base64Input.addEventListener('paste', (e) => {
                 setTimeout(() => {
                     if (base64Input.value.trim().length > 0) {
-                        // Auto display after paste
-                        // Uncomment next line for auto-display
+                        // Uncomment the next line to auto-display on paste
                         // displayImage();
                     }
                 }, 100);
@@ -839,7 +810,7 @@
         });
 
         // ============================================
-        // CTRL+V SHORTCUT FROM ANYWHERE
+        // KEYBOARD SHORTCUTS
         // ============================================
         document.addEventListener('keydown', (e) => {
             // Ctrl+Enter = Display
